@@ -5,11 +5,13 @@ import { fetchAllStocks, selectors } from '@/store/stocksSlice';
 
 type SymbolsGridProps = {
   onSymbolClick: (symbolId: string) => void;
+  activeCard: string | null;
 };
 
-const SymbolsGrid = ({ onSymbolClick }: SymbolsGridProps) => {
+const SymbolsGrid = ({ onSymbolClick, activeCard }: SymbolsGridProps) => {
   const stockSymbols = useAppSelector(selectors.selectStockIds);
   const prices = useAppSelector((state) => state.prices);
+
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchAllStocks());
@@ -18,7 +20,13 @@ const SymbolsGrid = ({ onSymbolClick }: SymbolsGridProps) => {
   return (
     <>
       {stockSymbols.map((id, i) => (
-        <SymbolCard price={prices[id]} onClick={onSymbolClick} key={i} id={id} />
+        <SymbolCard 
+          key={i} 
+          id={id} 
+          activeCard={activeCard}
+          price={prices[id]} 
+          onClick={onSymbolClick}
+        /> 
       ))}
     </>
   );

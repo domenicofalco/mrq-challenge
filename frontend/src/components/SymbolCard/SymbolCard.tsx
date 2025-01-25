@@ -9,11 +9,12 @@ type SymbolCardProps = {
   id: string;
   onClick: (symbolId: string) => void;
   price: number;
+  activeCard: string | null;
 };
 
-const SymbolCard = ({ id, onClick, price }: SymbolCardProps) => {
+const SymbolCard = ({ id, onClick, price, activeCard }: SymbolCardProps) => {
   const { trend, companyName, industry, marketCap } = useAppSelector((state) => state.stocks.entities[id]);
-  
+
   const handleOnClick = () => {
     onClick(id);
   };
@@ -21,8 +22,13 @@ const SymbolCard = ({ id, onClick, price }: SymbolCardProps) => {
   const priceFormatter = Intl.NumberFormat('en', { notation: 'compact' });
   let billion = priceFormatter.format(marketCap);
 
+  let symbolCardTransition = 'symbolCard--default';
+  if (activeCard) {
+    symbolCardTransition = activeCard === id ? 'symbolCard--focusin' : 'symbolCard--focusout';
+  }
+
   return (
-    <div onClick={handleOnClick} className="symbolCard">
+    <div onClick={handleOnClick} className={`symbolCard ${symbolCardTransition}`}>
       <div className="symbolCard__header">
         {id} - {trend && <img className="symbolCard__trend" src={`${trend?.toLocaleLowerCase()}.png`} />}
       </div>
