@@ -1,0 +1,39 @@
+.symbolsView {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.symbolsView__content {
+  display: flex;
+  flex: 1;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.symbolsView__cards {
+  background-color: #E2E2E4;
+  overflow: scroll;
+  padding: 24px;
+  gap: 24px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.symbolsView__chart {
+  padding: 0 12px;
+  width: 400px;
+  order: 1;
+}
+
+@media only screen and (max-width: 1024px) {
+  .symbolsView__chart {
+    order: 0;
+  }
+
+  .symbolsView__content {
+    flex-direction: column;
+  }
+}

@@ -20,7 +20,7 @@ const SymbolCard = ({ id, onClick, price }: SymbolCardProps) => {
         {id} - {trend}
       </div>
       <div>Price:</div>
-      <div>{price || '--'} </div>
+      <div>{`$${price?.toFixed(0)}` || '--'} </div>
       <ListItem Icon={<CompanyIcon />} label={companyName} />
     </div>
   );
