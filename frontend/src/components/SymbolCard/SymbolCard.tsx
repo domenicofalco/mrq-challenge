@@ -7,6 +7,7 @@ import { useAppSelector } from '@/hooks/redux';
 import ListItem from '@/components/ListItem';
 import { store } from '@/store';
 import activeCardSlice from '@/store/activeCardSlice';
+import { selectShowCardInfo } from '@/store/dashboardOptionsSlice';
 
 type SymbolCardProps = {
   id: string;
@@ -17,6 +18,7 @@ type realTimeTrend = "POSITIVE" | "NEGATIVE" | "NEUTRAL";
 
 const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
   const symbolId = useAppSelector((state) => state.activeCard.activeCardId);
+  const showCardInfo = useAppSelector(selectShowCardInfo);
 
   const onClick = (id: string) => {
     store.dispatch(
@@ -111,9 +113,13 @@ const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
           {price ? `$${price?.toFixed(0)}` : "--"}
         </span>
       </div>
-      <ListItem Icon={<CompanyIcon />} label={companyName} />
-      <ListItem Icon={<IndustryIcon />} label={industry} />
-      <ListItem Icon={<MarketCapIcon />} label={`$${billion}`} />
+      {showCardInfo && 
+        <>
+          <ListItem Icon={<CompanyIcon />} label={companyName} />
+          <ListItem Icon={<IndustryIcon />} label={industry} />
+          <ListItem Icon={<MarketCapIcon />} label={`$${billion}`} />
+        </>
+      }
     </div>
   );
 });
