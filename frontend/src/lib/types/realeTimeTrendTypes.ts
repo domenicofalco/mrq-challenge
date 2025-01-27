@@ -1,0 +1,1 @@
+export type realTimeTrend = "POSITIVE" | "NEGATIVE" | "NEUTRAL";

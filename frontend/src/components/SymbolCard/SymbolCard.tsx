@@ -1,5 +1,4 @@
-import './symbolCard.css';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as CompanyIcon } from '@/assets/company.svg';
 import { ReactComponent as IndustryIcon } from '@/assets/industry.svg';
 import { ReactComponent as MarketCapIcon } from '@/assets/market_cap.svg';
@@ -8,22 +7,25 @@ import ListItem from '@/components/ListItem';
 import { store } from '@/store';
 import activeCardSlice from '@/store/activeCardSlice';
 import { selectShowCardInfo } from '@/store/dashboardOptionsSlice';
+import PriceStrip from '@/components/PriceStrip';
+import { priceFormatter } from '@/utils/priceFormatter';
+import { realTimeTrend } from '@/lib/types/realeTimeTrendTypes';
+import SymbolCardView from '../SymbolCardView';
+import SymbolCardHeader from '../SymbolCardHeader';
 
 type SymbolCardProps = {
   id: string;
   price: number;
 };
 
-type realTimeTrend = "POSITIVE" | "NEGATIVE" | "NEUTRAL";
-
 const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
-  const symbolId = useAppSelector((state) => state.activeCard.activeCardId);
+  const selectedCardId = useAppSelector((state) => state.activeCard.activeCardId);
   const showCardInfo = useAppSelector(selectShowCardInfo);
 
   const onClick = (id: string) => {
     store.dispatch(
       activeCardSlice.actions.updateActiveCard({
-        activeCardId: id === symbolId ? null : id,
+        activeCardId: id === selectedCardId ? null : id,
       })
     );
   };
@@ -75,52 +77,28 @@ const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
     onClick(id);
   };
 
-  const priceFormatter = Intl.NumberFormat("en", { notation: "compact" });
-  let billion = priceFormatter.format(marketCap);
-
-  let symbolCardTransition = "symbolCard--default";
-  if (symbolId) {
-    symbolCardTransition =
-      symbolId === id ? "symbolCard--focusin" : "symbolCard--focusout";
-  }
-
-  let shakeEffectClass = shakeEffect ? "symbolCard--shake" : "";
-
-  let trendClass = "symbolCard--neutral";
-  if (realTimeTrend === "POSITIVE") {
-    trendClass = "symbolCard--positive";
-  } else if (realTimeTrend === "NEGATIVE") {
-    trendClass = "symbolCard--negative";
-  }
+  const CompanyIconMemo = useMemo(() => <CompanyIcon />, []);
+  const IndustryIconMemo = useMemo(() => <IndustryIcon />, []);
+  const MarketCapIconMemo = useMemo(() => <MarketCapIcon />, []);
 
   return (
-    <div
+    <SymbolCardView
+      id={id}
+      selectedCardId={selectedCardId}
+      shakeEffect={shakeEffect}
+      realTimeTrend={realTimeTrend}
       onClick={handleOnClick}
-      className={`symbolCard ${symbolCardTransition} ${shakeEffectClass} ${trendClass}`}
     >
-      <div className="symbolCard__header">
-        {id} -{" "}
-        {trend && (
-          <img
-            className="symbolCard__trend"
-            src={`${trend?.toLocaleLowerCase()}.png`}
-          />
-        )}
-      </div>
-      <div className="symbolCard__price">
-        <span className="symbolCard__label">Price:</span>
-        <span className="symbolCard__amount">
-          {price ? `$${price?.toFixed(0)}` : "--"}
-        </span>
-      </div>
+      <SymbolCardHeader id={id} trend={trend} />
+      <PriceStrip price={price} />
       {showCardInfo && 
         <>
-          <ListItem Icon={<CompanyIcon />} label={companyName} />
-          <ListItem Icon={<IndustryIcon />} label={industry} />
-          <ListItem Icon={<MarketCapIcon />} label={`$${billion}`} />
+          <ListItem Icon={CompanyIconMemo} label={companyName} />
+          <ListItem Icon={IndustryIconMemo} label={industry} />
+          <ListItem Icon={MarketCapIconMemo} label={`$${priceFormatter(marketCap)}`} />
         </>
       }
-    </div>
+    </SymbolCardView>
   );
 });
 

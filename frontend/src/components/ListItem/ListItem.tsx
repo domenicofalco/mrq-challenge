@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './listItem.css';
 type ListItemProps = {
   Icon: React.ReactNode;
@@ -14,13 +14,13 @@ type ListItemProps = {
     | 'baseline'
     | undefined;
 };
-const ListItem = ({ Icon, label, spacing }: ListItemProps) => {
+const ListItem = memo(({ Icon, label, spacing }: ListItemProps) => {
   return (
     <div style={{ justifyContent: spacing }} className={`listItem`}>
       <div className="listItem__icon">{Icon}</div>
       <div className="listItem__value">{label}</div>
     </div>
   );
-};
+});
 
 export default ListItem;

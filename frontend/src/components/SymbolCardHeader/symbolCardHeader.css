@@ -1,0 +1,14 @@
+.symbolCardHeader {
+  background-color: #0E1120;
+  color: #fff;
+  padding: 0 4px;
+  position: relative;
+  font-weight: 600;
+}
+
+.symbolCardHeader__trend {
+  width: 35px;
+  position: absolute;
+  right: -15px;
+  top: -10px;
+}
