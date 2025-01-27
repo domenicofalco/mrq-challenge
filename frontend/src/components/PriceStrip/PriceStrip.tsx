@@ -9,7 +9,7 @@ const PriceStrip = ({ price }: PriceStripProps) => {
     <div className="priceStrip">
       <span className="priceStrip__label">Price:</span>
       <span className="priceStrip__amount">
-        {price ? `$${price?.toFixed(0)}` : "--"}
+        {price ? `$${parseFloat(price.toFixed(1))}` : "--"}
       </span>
     </div>
   );

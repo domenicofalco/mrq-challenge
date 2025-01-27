@@ -11,9 +11,3 @@
     width: 100%;
   }
 }
-
-@media (max-width: 600px) {
-  .priceChart {
-    flex-direction: column;
-  }
-}
