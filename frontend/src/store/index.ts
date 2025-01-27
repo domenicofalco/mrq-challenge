@@ -5,6 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import stocksSlice from '@/store/stocksSlice';
 import priceHistorySlice from '@/store/priceHistorySlice';
 import { dashboardOptionsSlice } from '@/store/dashboardOptionsSlice';
+import activeCardSlice from './activeCardSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,7 +13,8 @@ export const store = configureStore({
     [pricesSlice.name]: pricesSlice.reducer,
     [stocksSlice.name]: stocksSlice.reducer,
     [priceHistorySlice.name]: priceHistorySlice.reducer,
-    [dashboardOptionsSlice.name]: dashboardOptionsSlice.reducer
+    [dashboardOptionsSlice.name]: dashboardOptionsSlice.reducer,
+    [activeCardSlice.name]: activeCardSlice.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
