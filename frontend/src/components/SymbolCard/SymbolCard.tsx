@@ -12,6 +12,7 @@ import { priceFormatter } from '@/utils/priceFormatter';
 import { realTimeTrend } from '@/lib/types/realeTimeTrendTypes';
 import SymbolCardPresentation from '../SymbolCardPresentation';
 import SymbolCardHeader from '../SymbolCardHeader';
+import usePriceChange from '@/hooks/usePriceChange';
 
 type SymbolCardProps = {
   id: string;
@@ -19,8 +20,13 @@ type SymbolCardProps = {
 };
 
 const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
+  const { shakeEffect, realTimeTrend } = usePriceChange(price);
+  
   const selectedCardId = useAppSelector((state) => state.activeCard.activeCardId);
   const showCardInfo = useAppSelector(selectShowCardInfo);
+  const { trend, companyName, industry, marketCap } = useAppSelector(
+    (state) => state.stocks.entities[id]
+  );
 
   const onClick = (id: string) => {
     store.dispatch(
@@ -28,50 +34,7 @@ const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
         activeCardId: id === selectedCardId ? null : id,
       })
     );
-  };
-
-  const { trend, companyName, industry, marketCap } = useAppSelector(
-    (state) => state.stocks.entities[id]
-  );
-  const [shakeEffect, setShakeEffect] = useState<boolean>(false);
-  const [realTimeTrend, setRealTimeTrend] = useState<realTimeTrend>("NEUTRAL");
-  const prevPrice = useRef(price);
-
-  const resetEffects = () => {
-    setShakeEffect(false);
-    setRealTimeTrend("NEUTRAL");
-  };
-
-  useEffect(() => {
-    if (
-      realTimeTrend === "POSITIVE" ||
-      realTimeTrend === "NEGATIVE" ||
-      shakeEffect
-    ) {
-      setTimeout(() => {
-        resetEffects();
-      }, 1000);
-    }
-  }, [realTimeTrend, shakeEffect]);
-
-  useEffect(() => {
-    resetEffects();
-
-    const priceDiffPerc =
-      ((price - prevPrice.current) / prevPrice.current) * 100;
-
-    if (priceDiffPerc > 0) {
-      setRealTimeTrend("POSITIVE");
-
-      if (priceDiffPerc > 25) {
-        setShakeEffect(true);
-      }
-    } else if (priceDiffPerc < 0) {
-      setRealTimeTrend("NEGATIVE");
-    }
-
-    prevPrice.current = price;
-  }, [price]);
+  };  
 
   const handleOnClick = () => {
     onClick(id);
