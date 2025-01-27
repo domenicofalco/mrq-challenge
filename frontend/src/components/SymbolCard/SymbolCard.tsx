@@ -10,7 +10,7 @@ import { selectShowCardInfo } from '@/store/dashboardOptionsSlice';
 import PriceStrip from '@/components/PriceStrip';
 import { priceFormatter } from '@/utils/priceFormatter';
 import { realTimeTrend } from '@/lib/types/realeTimeTrendTypes';
-import SymbolCardView from '../SymbolCardView';
+import SymbolCardPresentation from '../SymbolCardPresentation';
 import SymbolCardHeader from '../SymbolCardHeader';
 
 type SymbolCardProps = {
@@ -82,7 +82,7 @@ const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
   const MarketCapIconMemo = useMemo(() => <MarketCapIcon />, []);
 
   return (
-    <SymbolCardView
+    <SymbolCardPresentation
       id={id}
       selectedCardId={selectedCardId}
       shakeEffect={shakeEffect}
@@ -98,7 +98,7 @@ const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
           <ListItem Icon={MarketCapIconMemo} label={`$${priceFormatter(marketCap)}`} />
         </>
       }
-    </SymbolCardView>
+    </SymbolCardPresentation>
   );
 });
 
