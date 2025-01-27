@@ -1,6 +1,5 @@
 import './symbolCardHeader.css';
 import { memo } from 'react';
-import { useAppSelector } from '@/hooks/redux';
 
 type SymbolCardHeaderProps = {
   id: string;
