@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { realTimeTrend } from '@/lib/types/realeTimeTrendTypes';
+import { useState } from 'react';
+import { RealTimeTrend } from '@/lib/types/realeTimeTrendTypes';
 
-const useRealTimeTrend = (initialState: realTimeTrend) => {
-  const [realTimeTrend, setRealTimeTrend] = useState<realTimeTrend>(initialState);
+const useRealTimeTrend = (initialState: RealTimeTrend) => {
+  const [realTimeTrend, setRealTimeTrend] = useState<RealTimeTrend>(initialState);
   return { realTimeTrend, setRealTimeTrend };
 };
 

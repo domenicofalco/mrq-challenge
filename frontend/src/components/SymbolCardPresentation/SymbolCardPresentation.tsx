@@ -1,16 +1,18 @@
+import usePriceChange from '@/hooks/usePriceChange';
 import './symbolCardPresentation.css';
-import { realTimeTrend } from '@/lib/types/realeTimeTrendTypes';
+import { RealTimeTrend } from '@/lib/types/realeTimeTrendTypes';
 
 type SymbolCardProps = {
   id: string;
   selectedCardId: string | null;
-  shakeEffect: boolean;
-  realTimeTrend: realTimeTrend;
-  onClick: () => void;
+  price: number;
+  onClick: (id: string) => void;
   children: React.ReactNode;
 };
 
-const SymbolCardPresentation = ({ id, selectedCardId, shakeEffect, onClick, realTimeTrend, children }: SymbolCardProps) => {
+const SymbolCardPresentation = ({ id, selectedCardId, price, onClick, children }: SymbolCardProps) => {
+  const { shakeEffect, realTimeTrend } = usePriceChange(price);
+  
   let activeTransition = "symbolCardPresentation--default";
   if (selectedCardId) {
     activeTransition = selectedCardId === id ? "symbolCardPresentation--focusin" : "symbolCardPresentation--focusout";
@@ -27,7 +29,7 @@ const SymbolCardPresentation = ({ id, selectedCardId, shakeEffect, onClick, real
 
   return (
     <div
-      onClick={onClick}
+      onClick={() => onClick(id)}
       className={`symbolCardPresentation ${activeTransition} ${shakeTransition} ${trendTransition}`}
     >
       {children}

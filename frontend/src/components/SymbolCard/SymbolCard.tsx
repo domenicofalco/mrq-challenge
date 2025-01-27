@@ -9,10 +9,8 @@ import activeCardSlice from '@/store/activeCardSlice';
 import { selectShowCardInfo } from '@/store/dashboardOptionsSlice';
 import PriceStrip from '@/components/PriceStrip';
 import { priceFormatter } from '@/utils/priceFormatter';
-import { realTimeTrend } from '@/lib/types/realeTimeTrendTypes';
 import SymbolCardPresentation from '../SymbolCardPresentation';
 import SymbolCardHeader from '../SymbolCardHeader';
-import usePriceChange from '@/hooks/usePriceChange';
 
 type SymbolCardProps = {
   id: string;
@@ -20,13 +18,13 @@ type SymbolCardProps = {
 };
 
 const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
-  const { shakeEffect, realTimeTrend } = usePriceChange(price);
-  
   const selectedCardId = useAppSelector((state) => state.activeCard.activeCardId);
   const showCardInfo = useAppSelector(selectShowCardInfo);
-  const { trend, companyName, industry, marketCap } = useAppSelector(
-    (state) => state.stocks.entities[id]
-  );
+  const { trend, companyName, industry, marketCap } = useAppSelector((state) => state.stocks.entities[id]);
+
+  const CompanyIconMemo = useMemo(() => <CompanyIcon />, []);
+  const IndustryIconMemo = useMemo(() => <IndustryIcon />, []);
+  const MarketCapIconMemo = useMemo(() => <MarketCapIcon />, []);
 
   const onClick = (id: string) => {
     store.dispatch(
@@ -34,23 +32,14 @@ const SymbolCard = memo(({ id, price }: SymbolCardProps) => {
         activeCardId: id === selectedCardId ? null : id,
       })
     );
-  };  
-
-  const handleOnClick = () => {
-    onClick(id);
   };
-
-  const CompanyIconMemo = useMemo(() => <CompanyIcon />, []);
-  const IndustryIconMemo = useMemo(() => <IndustryIcon />, []);
-  const MarketCapIconMemo = useMemo(() => <MarketCapIcon />, []);
 
   return (
     <SymbolCardPresentation
       id={id}
       selectedCardId={selectedCardId}
-      shakeEffect={shakeEffect}
-      realTimeTrend={realTimeTrend}
-      onClick={handleOnClick}
+      price={price}
+      onClick={onClick}
     >
       <SymbolCardHeader id={id} trend={trend} />
       <PriceStrip price={price} />

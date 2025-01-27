@@ -24,7 +24,8 @@
 
 .symbolsView__chart {
   padding: 0 12px;
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   order: 1;
 }
 
