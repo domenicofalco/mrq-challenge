@@ -1,4 +1,5 @@
 import './symbolCard.css';
+import { memo, useEffect, useRef, useState } from 'react';
 import { ReactComponent as CompanyIcon } from '@/assets/company.svg';
 import { ReactComponent as IndustryIcon } from '@/assets/industry.svg';
 import { ReactComponent as MarketCapIcon } from '@/assets/market_cap.svg';
@@ -12,8 +13,44 @@ type SymbolCardProps = {
   activeCard: string | null;
 };
 
-const SymbolCard = ({ id, onClick, price, activeCard }: SymbolCardProps) => {
+type realTimeTrend = "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+
+const SymbolCard = memo(({ id, onClick, price, activeCard }: SymbolCardProps) => {
   const { trend, companyName, industry, marketCap } = useAppSelector((state) => state.stocks.entities[id]);
+  const [shakeEffect, setShakeEffect] = useState<boolean>(false);
+  const [realTimeTrend, setRealTimeTrend] = useState<realTimeTrend>("NEUTRAL");
+  const prevPrice = useRef(price);
+
+  const resetEffects = () => {
+    setShakeEffect(false);
+    setRealTimeTrend("NEUTRAL");
+  }
+
+  useEffect(() => {
+    if(realTimeTrend === "POSITIVE" || realTimeTrend === "NEGATIVE" || shakeEffect) {
+      setTimeout(() => {
+        resetEffects();
+      }, 1000);
+    }
+  }, [realTimeTrend, shakeEffect]);
+
+  useEffect(() => {
+    resetEffects();
+
+    const priceDiffPerc = (price - prevPrice.current) / prevPrice.current * 100;
+
+    if(priceDiffPerc > 0) {
+      setRealTimeTrend("POSITIVE");
+
+      if(priceDiffPerc > 25) {
+        setShakeEffect(true);
+      }
+    } else if (priceDiffPerc < 0) {
+      setRealTimeTrend("NEGATIVE");
+    }
+
+    prevPrice.current = price;
+  }, [price]);
 
   const handleOnClick = () => {
     onClick(id);
@@ -27,8 +64,17 @@ const SymbolCard = ({ id, onClick, price, activeCard }: SymbolCardProps) => {
     symbolCardTransition = activeCard === id ? 'symbolCard--focusin' : 'symbolCard--focusout';
   }
 
+  let shakeEffectClass = shakeEffect ? 'symbolCard--shake' : '';
+  
+  let trendClass = 'symbolCard--neutral';
+  if(realTimeTrend === "POSITIVE") {
+    trendClass = 'symbolCard--positive';
+  } else if(realTimeTrend === "NEGATIVE") {
+    trendClass = 'symbolCard--negative';
+  }
+
   return (
-    <div onClick={handleOnClick} className={`symbolCard ${symbolCardTransition}`}>
+    <div onClick={handleOnClick} className={`symbolCard ${symbolCardTransition} ${shakeEffectClass} ${trendClass}`}>
       <div className="symbolCard__header">
         {id} - {trend && <img className="symbolCard__trend" src={`${trend?.toLocaleLowerCase()}.png`} />}
       </div>
@@ -41,5 +87,6 @@ const SymbolCard = ({ id, onClick, price, activeCard }: SymbolCardProps) => {
       <ListItem Icon={<MarketCapIcon />} label={`$${billion}`} />
     </div>
   );
-};
+});
+
 export default SymbolCard;
