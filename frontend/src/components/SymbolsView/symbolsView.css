@@ -32,6 +32,7 @@
 @media only screen and (max-width: 1024px) {
   .symbolsView__chart {
     order: 0;
+    max-width: none;
   }
 
   .symbolsView__content {
