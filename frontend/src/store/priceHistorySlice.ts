@@ -52,10 +52,11 @@ const priceHistorySlice = createSlice({
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchPriceHistory.fulfilled, (state, action) => {
       const { symbol, history } = action.payload;
-      state.apiState.error = false;
-      state.apiState.loading = false;
-      state.history = history;
-      state.symbol = symbol;
+      if (state.symbol === symbol) {
+        state.apiState.error = false;
+        state.apiState.loading = false;
+        state.history = history;
+      }
     });
 
     builder.addCase(fetchPriceHistory.rejected, (state, action) => {
@@ -68,6 +69,7 @@ const priceHistorySlice = createSlice({
     builder.addCase(fetchPriceHistory.pending, (state, action) => {
       state.apiState.error = false;
       state.apiState.loading = true;
+      state.symbol = action.meta.arg;
     });
   }
 });

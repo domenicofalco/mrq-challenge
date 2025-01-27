@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import { stockData } from "./stocksData";
 
-const DELAY_BETWEEN_MESSAGES = 400;
+const DELAY_BETWEEN_MESSAGES = 800;
 
 class WebSocketServer {
   private wss: WebSocket.Server | null = null;
